@@ -1,9 +1,10 @@
 import { randIntBetween } from "./utilities";
 import type { SheetSettings, SheetState, GridCell, Grid } from "./types";
+import { Sheet } from "./js-spreadsheet-dist/Sheet";
 
 export const DEFAULTS: SheetSettings = {
-    numRows: 10,
-    numCols: 10,
+    numRows: 13,
+    numCols: 8,
 };
 
 export const newGrid = ({ numRows, numCols }: SheetSettings): Grid => {
@@ -27,5 +28,6 @@ export const newSheet = (settings: SheetSettings): SheetState => {
     return {
         grid: newGrid(settings),
         settings,
+        spreadsheet: new Sheet(),
     };
 };

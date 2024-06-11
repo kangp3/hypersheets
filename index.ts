@@ -7,7 +7,12 @@ import type {
     SheetSettings,
 } from "./types";
 import { Page } from "./html";
-import { cellListToSheetState, gridToHtml, sheetToHtml } from "./munge";
+import {
+    cellListToSheetState,
+    gridToHtml,
+    sheetToHtml,
+    xyToCellIndex,
+} from "./munge";
 import { DEFAULTS, newGrid, newSheet } from "./sheet";
 
 const app = express();
@@ -44,6 +49,14 @@ app.post("/editCell.html", (req, res) => {
 
     state.grid[editingParsed.y][editingParsed.x].expr = formula;
     state.selected!.expr = formula;
+
+    state.spreadsheet.setCell(
+        xyToCellIndex(state.selected!),
+        state.selected!.expr,
+    );
+
+    // TODO: Resolve everything
+
     res.send(sheetToHtml(state));
 });
 

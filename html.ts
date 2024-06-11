@@ -1,6 +1,7 @@
 // A tagged template function to invoke Prettier's built-in formatting
 
-import type { GridCell as GridCellType } from "./types";
+import { alphaArray, xyToCellIndex } from "./munge";
+import type { GridCell as GridCellType, SheetSettings } from "./types";
 
 // See https://prettier.io/blog/2020/08/24/2.1.0.html
 const html: typeof String.raw = (templates, ...args): string =>
@@ -66,15 +67,14 @@ export const CellContents = (cell: GridCellType) => html`
     <button
         type="submit"
         name="selected"
+        class="grid__cell-edit-button"
         value="${JSON.stringify(cell).replaceAll('"', "&quot;")}"
     >
-        ${
-            cell.expr /* TODO: This should be the cell's value, and only show the expr when we click it */
-        }
+        ${cell.resolvedDisplay ?? ""}
     </button>
 `;
 export const GridCell = (cell: GridCellType) =>
-    html`<td class="grid__cell">
+    html`<td class="grid__cell" title="${xyToCellIndex(cell)}">
         <input
             name="grid__cell"
             type="hidden"
@@ -82,22 +82,39 @@ export const GridCell = (cell: GridCellType) =>
         />
         ${CellContents(cell)}
     </td>`;
-export const GridRow = ({ contents }: WithContents) => html`
+export const GridRow = ({
+    contents,
+    row,
+}: WithContents & { row: number }) => html`
     <tr class="grid__row">
+        <th>${row + 1}</th>
         ${contents}
     </tr>
 `;
 
-export const Grid = ({ contents }: WithContents) =>
+export const Grid = ({
+    contents,
+    numCols,
+}: WithContents & { numCols: SheetSettings["numCols"] }) =>
     html`<table>
-        ${contents}
+        <thead>
+            <tr>
+                <th></th>
+                ${alphaArray(numCols)
+                    .map((letter) => html`<th>${letter}</th>`)
+                    .join("")}
+            </tr>
+        </thead>
+        <tbody>
+            ${contents}
+        </tbody>
     </table> `;
 
 export const UnselectedFormulaBar = () =>
     html`<div>Select a cell to edit</div>`;
 export const FormulaBar = (cell: GridCellType) =>
     html`<div>
-        ${cell.x},${cell.y}:
+        ${xyToCellIndex(cell)}:
         <input
             type="hidden"
             name="editing"

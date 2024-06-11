@@ -1,5 +1,6 @@
 :root {
     --beat: 0.2em;
+    --phi: 1.618033988749895;
 }
 
 html,
@@ -11,36 +12,24 @@ button {
 }
 
 .grid {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-}
-
-.grid legend {
-    display: none;
-}
-
-.grid fieldset {
-    padding: 0;
-    border: none;
-}
-
-.grid__row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
 }
 
 .grid__cell {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 5ch;
-    aspect-ratio: 1; /* Maybe aspect-ratio isn't working on eink browser? */
-    height: 5ch;
-    background-color: #a8a8a8;
+    height: calc(var(--phi) * 1em);
+    min-width: calc(var(--phi) * var(--phi) * 1em);
+    width: max-content;
     border: 1px solid #9a9a9a;
+
+    position: relative;
+}
+
+.grid__cell:hover {
+    background-color: #b3b3b3;
+}
+
+.grid__cell-edit-button {
+    position: absolute;
+    inset: 0;
 }
 
 .grid__cell button {
@@ -48,6 +37,7 @@ button {
     height: 100%;
     width: 100%;
     display: inline-block;
+    background-color: inherit;
     box-shadow:
         rgba(0, 0, 0, 0.09) 0px 2px 1px,
         rgba(0, 0, 0, 0.09) 0px 4px 2px,
