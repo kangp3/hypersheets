@@ -7,8 +7,8 @@ import type {
     SheetSettings,
 } from "./types";
 import { Page } from "./html";
-import { cellListToSheetState, gridToHtml } from "./munge";
-import { DEFAULTS, newGrid } from "./sheet";
+import { cellListToSheetState, gridToHtml, sheetToHtml } from "./munge";
+import { DEFAULTS, newGrid, newSheet } from "./sheet";
 
 const app = express();
 const port = process.env.PORT || 3004;
@@ -18,7 +18,17 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
-    res.send(Page({ contents: gridToHtml(newGrid(DEFAULTS)) }));
+    res.send(Page({ contents: sheetToHtml(newSheet(DEFAULTS)) }));
+});
+
+app.post("/selectCell.html", (req, res) => {
+    const { grid__cell, selected } = req.body;
+    const state = cellListToSheetState(
+        grid__cell.map((value: string) => JSON.parse(value)),
+    );
+    const selectedParsed: GridCellType = JSON.parse(selected);
+    state.selected = selectedParsed;
+    res.send(sheetToHtml(state));
 });
 
 app.post("/editCell.html", (req, res) => {

@@ -23,3 +23,9 @@ export const newGrid = ({ numRows, numCols }: SheetSettings): Grid => {
 
     return grid;
 };
+export const newSheet = (settings: SheetSettings): SheetState => {
+    return {
+        grid: newGrid(settings),
+        settings,
+    };
+};

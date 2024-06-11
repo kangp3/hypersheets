@@ -12,14 +12,18 @@ export const queryToSettings = ({
     return settings;
 };
 
-export const cellListToSheetState: (cells: Type.GridCell[]) => Type.SheetState = (
-    cells,
-) => {
+export const cellListToSheetState: (
+    cells: Type.GridCell[],
+) => Type.SheetState = (cells) => {
     const grid: Type.Grid = [];
     let maxColumn = 0;
     let maxRow = 0;
     cells.forEach((cell) => {
-		// TODO
+        const { y, x } = cell;
+        if (!grid[y]) grid[y] = [];
+        grid[y][x] = cell;
+        maxColumn = Math.max(maxColumn, x);
+        maxRow = Math.max(maxRow, y);
     });
 
     const numCols = maxColumn + 1;
@@ -34,14 +38,21 @@ export const cellListToSheetState: (cells: Type.GridCell[]) => Type.SheetState =
     };
 };
 
-export const gridToHtml: (grid: Type.Grid) => string = (grid): string =>
+export const gridToHtml: (grid: Type.Grid) => string = (grid) =>
     HTML.Grid({
         contents: grid
-            .map((row, index) =>
+            .map((row) =>
                 HTML.GridRow({
                     contents: row.map((cell) => HTML.GridCell(cell)).join(""),
-                    row: index,
                 }),
             )
             .join(""),
+    });
+
+export const sheetToHtml: (sheet: Type.SheetState) => string = (sheet) =>
+    HTML.Sheet({
+        formulaBar: sheet.selected
+            ? HTML.FormulaBar(sheet.selected)
+            : HTML.UnselectedFormulaBar(),
+        grid: gridToHtml(sheet.grid),
     });

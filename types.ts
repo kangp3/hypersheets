@@ -10,4 +10,5 @@ export type SheetSettings = {
 export type SheetState = {
     grid: Grid;
     settings: SheetSettings;
+    selected?: GridCell;
 };
