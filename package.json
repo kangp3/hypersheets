@@ -2,6 +2,10 @@
   "name": "hypersheets",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "run-server": "bun run index.ts",
+    "run-server:dev": "bun run --watch --no-clear-screen index.ts",
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
