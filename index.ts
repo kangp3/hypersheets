@@ -55,7 +55,13 @@ app.post("/editCell.html", (req, res) => {
         state.selected!.expr,
     );
 
-    // TODO: Resolve everything
+	state.grid.forEach(row => {
+		row.forEach(cell => {
+			if (!cell.expr) return;
+			cell.resolved = state.spreadsheet.getCell(xyToCellIndex(cell)).getValue();
+			cell.resolvedDisplay = `${cell.resolved}`;
+		});
+	});
 
     res.send(sheetToHtml(state));
 });
