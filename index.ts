@@ -58,7 +58,12 @@ app.post("/editCell.html", (req, res) => {
 	state.grid.forEach(row => {
 		row.forEach(cell => {
 			if (!cell.expr) return;
-			cell.resolved = state.spreadsheet.getCell(xyToCellIndex(cell)).getValue();
+			const srcCell = state.spreadsheet.getCell(xyToCellIndex(cell))
+			let resolved = srcCell;
+			while (resolved?.getValue) {
+				resolved = resolved.getValue(); // TODO: This looks like a bug in js-spreadsheets
+			}
+			cell.resolved = resolved;
 			cell.resolvedDisplay = `${cell.resolved}`;
 		});
 	});
