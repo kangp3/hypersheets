@@ -89,16 +89,9 @@ export const GridRow = ({ contents }: WithContents) => html`
 `;
 
 export const Grid = ({ contents }: WithContents) =>
-    html`<form
-        hx-post="/selectCell.html"
-        hx-swap="outerHTML"
-        hx-target="#sheet"
-        class="grid"
-    >
-        <table>
-            ${contents}
-        </table>
-    </form>`;
+    html`<table>
+        ${contents}
+    </table> `;
 
 export const UnselectedFormulaBar = () =>
     html`<div>Select a cell to edit</div>`;
@@ -106,7 +99,18 @@ export const FormulaBar = (cell: GridCellType) =>
     html`<div>
         ${cell.x},${cell.y}:
         <input
+            type="hidden"
+            name="selected"
+            value="${JSON.stringify(cell).replaceAll('"', "&quot;")}"
+        />
+        <input
+            id="formula"
+            name="formula"
             value="${cell.expr}"
+            hx-post="/editCell.html"
+            hx-trigger="input delay:250ms"
+            hx-swap="outerHTML"
+            hx-target="closest form"
             placeholder="Type a value or a formula here"
         />
     </div>`;
@@ -117,4 +121,7 @@ export const Sheet = ({
 }: {
     formulaBar: string;
     grid: string;
-}) => html`<div id="sheet">${formulaBar} ${grid}</div>`;
+}) =>
+    html`<form hx-post="/selectCell.html" hx-swap="outerHTML" class="grid">
+        ${formulaBar} ${grid}
+    </form>`;

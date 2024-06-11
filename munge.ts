@@ -14,7 +14,8 @@ export const queryToSettings = ({
 
 export const cellListToSheetState: (
     cells: Type.GridCell[],
-) => Type.SheetState = (cells) => {
+    selected?: Type.GridCell,
+) => Type.SheetState = (cells, selected) => {
     const grid: Type.Grid = [];
     let maxColumn = 0;
     let maxRow = 0;
@@ -35,6 +36,7 @@ export const cellListToSheetState: (
             numRows,
             numCols,
         },
+        selected,
     };
 };
 
