@@ -4,12 +4,15 @@
   "type": "module",
   "scripts": {
     "run-server": "bun run index.ts",
-    "run-server:dev": "bun run --watch --no-clear-screen index.ts",
+    "run-server:dev": "bun run --watch --no-clear-screen index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "js-spreadsheet": "^1.0.1"
   }
 }
