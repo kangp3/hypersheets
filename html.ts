@@ -100,12 +100,13 @@ export const FormulaBar = (cell: GridCellType) =>
         ${cell.x},${cell.y}:
         <input
             type="hidden"
-            name="selected"
+            name="editing"
             value="${JSON.stringify(cell).replaceAll('"', "&quot;")}"
         />
         <input
             id="formula"
             name="formula"
+            autofocus="true"
             value="${cell.expr}"
             hx-post="/editCell.html"
             hx-trigger="input delay:250ms"

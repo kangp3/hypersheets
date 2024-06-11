@@ -34,15 +34,15 @@ app.post("/selectCell.html", (req, res) => {
 });
 
 app.post("/editCell.html", (req, res) => {
-    const { grid__cell, selected, formula } = req.body;
+    const { grid__cell, editing, formula } = req.body;
 
-    const selectedParsed: GridCellType = JSON.parse(selected);
+    const editingParsed: GridCellType = JSON.parse(editing);
     const state = cellListToSheetState(
         grid__cell.map((value: string) => JSON.parse(value)),
-        selectedParsed,
+        editingParsed,
     );
 
-    state.grid[selectedParsed.y][selectedParsed.x].expr = formula;
+    state.grid[editingParsed.y][editingParsed.x].expr = formula;
     state.selected!.expr = formula;
     res.send(sheetToHtml(state));
 });
@@ -53,7 +53,7 @@ app.use(express.static("public"));
 // Final 404/5XX handlers
 //
 app.use(function (err, req, res, next) {
-    console.error("5XX", err, req, next);
+    console.error("5XX", err);
     res.status(err?.status || 500);
 
     res.send("500");
