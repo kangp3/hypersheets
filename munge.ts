@@ -57,16 +57,27 @@ export const cellListToSheetState: (
     };
 };
 
-export const gridToHtml: (grid: Type.Grid, numCols: number) => string = (
-    grid,
-    numCols,
-) =>
+export const gridToHtml: (
+    grid: Type.Grid,
+    numCols: Type.SheetState["settings"]["numCols"],
+    selected: Type.SheetState["selected"],
+) => string = (grid, numCols, selected) =>
     HTML.Grid({
         contents: grid
-            .map((row, index) =>
+            .map((row, rowIndex) =>
                 HTML.GridRow({
-                    contents: row.map((cell) => HTML.GridCell(cell)).join(""),
-                    row: index,
+                    contents: row
+                        .map((cell) =>
+                            HTML.GridCell(
+                                cell,
+                                selected
+                                    ? selected.y === cell.y &&
+                                          selected.x === cell.x
+                                    : false,
+                            ),
+                        )
+                        .join(""),
+                    row: rowIndex,
                 }),
             )
             .join(""),
@@ -78,5 +89,5 @@ export const sheetToHtml: (sheet: Type.SheetState) => string = (sheet) =>
         formulaBar: sheet.selected
             ? HTML.FormulaBar(sheet.selected)
             : HTML.UnselectedFormulaBar(),
-        grid: gridToHtml(sheet.grid, sheet.settings.numCols),
+        grid: gridToHtml(sheet.grid, sheet.settings.numCols, sheet.selected),
     });

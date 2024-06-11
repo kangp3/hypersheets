@@ -46,6 +46,10 @@ button {
         rgba(0, 0, 0, 0.09) 0px 32px 16px;
 }
 
+.grid__cell--selected {
+    outline: 3px solid black;
+}
+
 .toast {
     position: fixed;
     top: calc(var(--beat) * 4);

@@ -73,8 +73,11 @@ export const CellContents = (cell: GridCellType) => html`
         ${cell.resolvedDisplay ?? ""}
     </button>
 `;
-export const GridCell = (cell: GridCellType) =>
-    html`<td class="grid__cell" title="${xyToCellIndex(cell)}">
+export const GridCell = (cell: GridCellType, selected: boolean) =>
+    html`<td
+        class="grid__cell ${selected ? `grid__cell--selected` : ""}"
+        title="${xyToCellIndex(cell)}"
+    >
         <input
             name="grid__cell"
             type="hidden"
@@ -130,6 +133,7 @@ export const FormulaBar = (cell: GridCellType) =>
             hx-swap="outerHTML"
             hx-target="closest form"
             placeholder="Type a value or a formula here"
+            onkeydown="if (event.key === 'Enter') event.preventDefault()"
         />
     </div>`;
 
