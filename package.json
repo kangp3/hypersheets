@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
-    "express": "^4.19.2",
-    "js-spreadsheet": "^1.0.1"
+    "express": "^4.19.2"
   }
 }
