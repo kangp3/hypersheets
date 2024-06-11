@@ -56,13 +56,6 @@ button {
         rgba(0, 0, 0, 0.09) 0px 32px 16px;
 }
 
-.grid__cell--mine {
-    /* background-color: lightgray; */
-}
-
-.grid__cell.grid__cell--hidden {
-}
-
 .toast {
     position: fixed;
     top: calc(var(--beat) * 4);

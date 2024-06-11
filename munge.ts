@@ -5,7 +5,6 @@ import { DEFAULTS } from "./sheet";
 export const queryToSettings = ({
     rows,
     cols,
-    mines,
 }: { [key in string]: unknown }): Type.SheetSettings => {
     const settings = { ...DEFAULTS };
     if (Number.isSafeInteger(Number(rows))) settings.numRows = Number(rows);

@@ -6,14 +6,9 @@ import type {
     GridCell as GridCellType,
     SheetSettings,
 } from "./types";
-import { SheetState, Page } from "./html";
-import {
-    cellListToSheetState,
-    sheetStateToHtml,
-    gridToHtml,
-    queryToSettings,
-} from "./munge";
-import { DEFAULTS, newGrid, select } from "./sheet";
+import { Page } from "./html";
+import { cellListToSheetState, gridToHtml } from "./munge";
+import { DEFAULTS, newGrid } from "./sheet";
 
 const app = express();
 const port = process.env.PORT || 3004;
@@ -31,13 +26,9 @@ app.post("/editCell.html", (req, res) => {
     const state = cellListToSheetState(
         grid__cell.map((value: string) => JSON.parse(value)),
     );
+    // TODO: Change to edited cell, not 'selected'
     const selectedParsed: GridCellType = JSON.parse(selected);
-    select(state, selectedParsed);
-    res.send(
-        SheetState({
-            contents: gridToHtml(state.grid),
-        }),
-    );
+    res.send(gridToHtml(state.grid));
 });
 
 app.use(express.static("public"));

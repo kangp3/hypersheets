@@ -1,14 +1,6 @@
 // A tagged template function to invoke Prettier's built-in formatting
 
-import type {
-    Empty,
-    Flag,
-    SheetSettings,
-    SheetState as SheetStateType,
-    GridCell as GridCellType,
-    Mine,
-    Question,
-} from "./types";
+import type { GridCell as GridCellType } from "./types";
 
 // See https://prettier.io/blog/2020/08/24/2.1.0.html
 const html: typeof String.raw = (templates, ...args): string =>
@@ -22,10 +14,10 @@ export const Page = ({ contents }: WithContents) => html`
         <head>
             <meta charset="utf-8" />
             <meta http-equiv="x-ua-compatible" content="ie=edge" />
-            <title>Minesweeper</title>
+            <title>Spreadsheet in Hypermedia</title>
             <meta
                 name="description"
-                content="Minesweeper in hypermedia experiment"
+                content="Spreadsheet in hypermedia experiment"
             />
             <meta
                 name="viewport"
@@ -56,13 +48,11 @@ export const Page = ({ contents }: WithContents) => html`
                 type="text/css"
                 media="screen"
             />
-            <script src="/service-worker-registrar.js"></script>
         </head>
 
         <body>
             ${contents}
 
-            <script src="browserEntry.js"></script>
             <script
                 src="https://unpkg.com/htmx.org@1.9.10"
                 integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
@@ -72,62 +62,59 @@ export const Page = ({ contents }: WithContents) => html`
     </html>
 `;
 
-// TODO Emoji broken in string templates?
-//      Confirmed: https://github.com/oven-sh/bun/issues/8745
-export const MineCellContents = (_mine: Mine) => `💣`;
-export const FlagCellContents = (_: Flag) => `🏁`;
-export const QuestionCellContents = (_: Question) => `❓`;
-export const EmptyCellContents = ({ touchingMines }: Empty) => html`
-    ${touchingMines === 0 ? "" : touchingMines}
-`;
-export const MysteryCellContents = (cell: GridCellType) => html`
+export const CellContents = (cell: GridCellType) => html`
     <button
         type="submit"
         name="selected"
         value="${JSON.stringify(cell).replaceAll('"', "&quot;")}"
-    ></button>
+    >
+        ${
+            cell.expr /* TODO: This should be the cell's value, and only show the expr when we click it */
+        }
+    </button>
 `;
 export const GridCell = (cell: GridCellType) =>
-    html`<div
-        class="grid__cell grid__cell--${cell.type} grid__cell--${cell.revealed
-            ? "revealed"
-            : "hidden"}"
-        data-grid-x="${cell.x}"
-        data-grid-y="${cell.y}"
-        data-revealed="${cell.revealed}"
-        data-type="${cell.type}"
-    >
+    html`<td class="grid__cell">
         <input
             name="grid__cell"
             type="hidden"
             value="${JSON.stringify(cell).replaceAll('"', "&quot;")}"
         />
-        ${!cell.revealed
-            ? MysteryCellContents(cell)
-            : cell.type === "empty"
-            ? EmptyCellContents(cell)
-            : cell.type === "flag"
-            ? FlagCellContents(cell)
-            : cell.type === "question"
-            ? QuestionCellContents(cell)
-            : MineCellContents(cell)}
-    </div>`;
-export const GridRow = ({
-    contents,
-    row,
-}: WithContents & { row: number }) => html`
-    <fieldset class="grid__row">
-        <legend>Row ${row}</legend>
+        ${CellContents(cell)}
+    </td>`;
+export const GridRow = ({ contents }: WithContents) => html`
+    <tr class="grid__row">
         ${contents}
-    </fieldset>
+    </tr>
 `;
 
 export const Grid = ({ contents }: WithContents) =>
-    html`<form hx-post="/reveal.html" hx-swap="outerHTML" class="grid">
-        ${contents}
+    html`<form
+        hx-post="/selectCell.html"
+        hx-swap="outerHTML"
+        hx-target="#sheet"
+        class="grid"
+    >
+        <table>
+            ${contents}
+        </table>
     </form>`;
 
-export const SheetState = ({
-    contents,
-    stateMessage,
-}: WithContents & { stateMessage: string }) => contents + stateMessage;
+export const UnselectedFormulaBar = () =>
+    html`<div>Select a cell to edit</div>`;
+export const FormulaBar = (cell: GridCellType) =>
+    html`<div>
+        ${cell.x},${cell.y}:
+        <input
+            value="${cell.expr}"
+            placeholder="Type a value or a formula here"
+        />
+    </div>`;
+
+export const Sheet = ({
+    formulaBar,
+    grid,
+}: {
+    formulaBar: string;
+    grid: string;
+}) => html`<div id="sheet">${formulaBar} ${grid}</div>`;

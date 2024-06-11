@@ -13,3 +13,7 @@ bun run index.ts
 ```
 
 This project was created using `bun init` in bun v1.1.12. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+
+## TODO
+
+Investigate https://git.sheetjs.com/SheetJS/sheetjs
